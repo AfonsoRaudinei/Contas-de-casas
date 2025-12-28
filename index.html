@@ -16,12 +16,14 @@
             background: linear-gradient(135deg, #f8f9fc 0%, #f0f2f7 100%);
             color: #0d1117;
             min-height: 100vh;
-            padding: 24px 16px;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 24px 16px;
+            position: relative;
         }
 
         /* HEADER */
@@ -242,51 +244,146 @@
             margin-right: 12px;
         }
 
-        /* CATEGORIAS GRID */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
+        /* SIDEBAR CATEGORIAS */
+        .sidebar-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1001;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s;
         }
 
-        .category-item {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
+        .sidebar-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 360px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 4px;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 24px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .category-item-sidebar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             padding: 12px;
-            text-align: center;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
             transition: all 0.2s;
         }
 
-        .category-item:hover {
-            border-color: #3b82f6;
+        .category-item-sidebar:hover {
             background: #f0f9ff;
+            border-color: #3b82f6;
         }
 
-        .category-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
+        .category-icon-sidebar {
+            font-size: 24px;
         }
 
-        .category-name {
-            font-size: 13px;
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name-sidebar {
             font-weight: 600;
-            color: #0d1117;
-            margin-bottom: 8px;
-            word-break: break-word;
+            font-size: 14px;
         }
 
-        .category-actions {
+        .category-actions-sidebar {
             display: flex;
             gap: 4px;
-            justify-content: center;
         }
 
         /* MODAL */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 1002;
             top: 0;
             left: 0;
             width: 100%;
@@ -360,17 +457,6 @@
             border-color: #3b82f6;
         }
 
-        /* EDIT SALDO */
-        .edit-saldo-container {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .edit-saldo-container input {
-            flex: 1;
-        }
-
         .empty-state {
             text-align: center;
             color: #9ca3af;
@@ -380,11 +466,16 @@
         @media (max-width: 768px) {
             .cards-grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
-            .categories-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .sidebar { width: 100%; right: -100%; }
         }
     </style>
 </head>
 <body>
+    <!-- BOTÃO FLUTUANTE CATEGORIAS -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        ⚙️
+    </button>
+
     <div class="container">
         <!-- HEADER -->
         <div class="header">
@@ -431,19 +522,43 @@
             <button class="btn btn-primary" onclick="adicionarDespesa()">Adicionar Despesa</button>
         </div>
 
-        <!-- GERENCIAR CATEGORIAS -->
-        <div class="section">
-            <div class="section-title">⚙️ Categorias</div>
-            <button class="btn btn-primary" style="margin-bottom: 16px;" onclick="abrirNovaCategoria()">➕ Nova Categoria</button>
-            <div class="categories-grid" id="categoriesGrid"></div>
-        </div>
-
         <!-- DESPESAS RECENTES -->
         <div class="section">
             <div class="section-title">📋 Despesas Recentes</div>
             <div id="despesasLista" class="expense-list">
                 <div class="empty-state">Nenhuma despesa registrada</div>
             </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR CATEGORIAS -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Categorias</div>
+            <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+        </div>
+
+        <div class="sidebar-tabs">
+            <button class="tab-btn active" onclick="switchTab('list')">Lista</button>
+            <button class="tab-btn" onclick="switchTab('add')">➕ Nova</button>
+        </div>
+
+        <!-- ABA LISTA -->
+        <div id="tab-list" class="tab-content active">
+            <div class="categories-list" id="categoriesList"></div>
+        </div>
+
+        <!-- ABA NOVA CATEGORIA -->
+        <div id="tab-add" class="tab-content">
+            <div class="form-group">
+                <label class="form-label">Nome</label>
+                <input id="nomeCatSidebar" type="text" placeholder="Ex: Casa, Alimentação...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ícone</label>
+                <div class="emoji-grid" id="emojiGridSidebar"></div>
+            </div>
+            <button class="btn btn-primary" onclick="salvarCategoriaSidebar()" style="margin-top: 16px;">Criar Categoria</button>
         </div>
     </div>
 
@@ -465,39 +580,17 @@
         </div>
     </div>
 
-    <!-- MODAL NOVA CATEGORIA -->
-    <div id="modalNovaCategoria" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span id="modalCatTitulo">Nova Categoria</span>
-                <button class="close-btn" onclick="fecharModal('modalNovaCategoria')">&times;</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Nome</label>
-                <input id="nomeCat" type="text" placeholder="Ex: Casa, Alimentação...">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Selecione um Ícone</label>
-                <div class="emoji-grid" id="emojiGrid"></div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <button class="btn btn-secondary" onclick="fecharModal('modalNovaCategoria')">Cancelar</button>
-                <button class="btn btn-primary" onclick="salvarCategoria()">Salvar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const emojis = ['🏠', '🛒', '🏥', '🔌', '📡', '📚', '🎬', '🍽️', '🚗', '✈️', '👕', '💻', '🎮', '📱', '💄', '⚽', '🎸', '📖', '🧘', '💊', '☕', '🍕', '🍰', '🎂', '🎁', '💐', '🌸', '🎄', '🎃', '🦃', '🎆', '🎇', '🎉', '🎊', '🎈', '🎀', '🎯', '🎲', '🧩', '🎪', '🎭', '🎨', '🖼️', '🎤', '🎧', '🎵', '🎶', '🏆', '🥇', '🥈', '🥉', '⭐', '✨', '💫', '⚡', '🔥', '💥', '✅', '❌', '⚠️', '🔔', '💡', '🔐', '🔓', '🗝️', '🔧', '🔨'];
         
         let saldoGlobal = 8830;
-        let editandoCat = null;
-        let emojiSelecionado = null;
+        let emojiSelecionadoSidebar = null;
 
         function inicializar() {
             carregarCategorias();
             atualizarSelect();
-            renderizarCategorias();
+            renderizarCategoriasSidebar();
+            renderizarEmojisSidebar();
             atualizarDashboard();
         }
 
@@ -520,26 +613,82 @@
             return JSON.parse(cats);
         }
 
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+
+        function renderizarCategoriasSidebar() {
+            const cats = carregarCategorias();
+            const list = document.getElementById('categoriesList');
+            list.innerHTML = cats.map(cat => `
+                <div class="category-item-sidebar">
+                    <div class="category-icon-sidebar">${cat.icon}</div>
+                    <div class="category-info">
+                        <div class="category-name-sidebar">${cat.nome}</div>
+                    </div>
+                    <div class="category-actions-sidebar">
+                        <button class="btn-icon" onclick="editarCategoriaSidebar(${cat.id})" title="Editar">✎</button>
+                        <button class="btn-icon" onclick="deletarCategoria(${cat.id})" title="Deletar" style="background: #fee2e2;">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarEmojisSidebar() {
+            const grid = document.getElementById('emojiGridSidebar');
+            grid.innerHTML = emojis.map(e => `
+                <button type="button" class="emoji-btn ${e === emojiSelecionadoSidebar ? 'selected' : ''}" 
+                        onclick="selecionarEmojiSidebar('${e}')">${e}</button>
+            `).join('');
+        }
+
+        function selecionarEmojiSidebar(emoji) {
+            emojiSelecionadoSidebar = emoji;
+            renderizarEmojisSidebar();
+        }
+
+        function salvarCategoriaSidebar() {
+            const nome = document.getElementById('nomeCatSidebar').value.trim();
+            if (!nome || !emojiSelecionadoSidebar) {
+                alert('Preencha nome e selecione um ícone!');
+                return;
+            }
+
+            const cats = carregarCategorias();
+            cats.push({
+                id: Math.max(...cats.map(c => c.id), 0) + 1,
+                nome,
+                icon: emojiSelecionadoSidebar
+            });
+            localStorage.setItem('categorias', JSON.stringify(cats));
+            
+            document.getElementById('nomeCatSidebar').value = '';
+            emojiSelecionadoSidebar = null;
+            renderizarCategoriasSidebar();
+            renderizarEmojisSidebar();
+            atualizarSelect();
+            toggleSidebar();
+        }
+
+        function editarCategoriaSidebar(id) {
+            // Implementar edição inline no sidebar se necessário
+            alert('Edição em desenvolvimento - use o botão de categorias para editar');
+        }
+
         function atualizarSelect() {
             const cats = carregarCategorias();
             const select = document.getElementById('categoria');
             select.innerHTML = '<option value="">Selecione...</option>' + 
                 cats.map(c => `<option value="${c.nome}">${c.icon} ${c.nome}</option>`).join('');
-        }
-
-        function renderizarCategorias() {
-            const cats = carregarCategorias();
-            const grid = document.getElementById('categoriesGrid');
-            grid.innerHTML = cats.map(cat => `
-                <div class="category-item">
-                    <div class="category-icon">${cat.icon}</div>
-                    <div class="category-name">${cat.nome}</div>
-                    <div class="category-actions">
-                        <button class="btn btn-secondary btn-small" onclick="editarCategoria(${cat.id})">✎</button>
-                        <button class="btn btn-secondary btn-small" onclick="deletarCategoria(${cat.id})">✕</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
         function abrirEditarSaldo() {
@@ -559,73 +708,12 @@
             atualizarDashboard();
         }
 
-        function abrirNovaCategoria() {
-            editandoCat = null;
-            document.getElementById('modalCatTitulo').innerText = 'Nova Categoria';
-            document.getElementById('nomeCat').value = '';
-            emojiSelecionado = null;
-            renderizarEmojis();
-            document.getElementById('modalNovaCategoria').classList.add('active');
-        }
-
-        function editarCategoria(id) {
-            const cats = carregarCategorias();
-            const cat = cats.find(c => c.id === id);
-            if (!cat) return;
-
-            editandoCat = id;
-            document.getElementById('modalCatTitulo').innerText = 'Editar Categoria';
-            document.getElementById('nomeCat').value = cat.nome;
-            emojiSelecionado = cat.icon;
-            renderizarEmojis();
-            document.getElementById('modalNovaCategoria').classList.add('active');
-        }
-
-        function renderizarEmojis() {
-            const grid = document.getElementById('emojiGrid');
-            grid.innerHTML = emojis.map(e => `
-                <button type="button" class="emoji-btn ${e === emojiSelecionado ? 'selected' : ''}" 
-                        onclick="selecionarEmoji('${e}')">${e}</button>
-            `).join('');
-        }
-
-        function selecionarEmoji(emoji) {
-            emojiSelecionado = emoji;
-            renderizarEmojis();
-        }
-
-        function salvarCategoria() {
-            const nome = document.getElementById('nomeCat').value.trim();
-            if (!nome || !emojiSelecionado) {
-                alert('Preencha nome e selecione um ícone!');
-                return;
-            }
-
-            const cats = carregarCategorias();
-            if (editandoCat) {
-                const cat = cats.find(c => c.id === editandoCat);
-                cat.nome = nome;
-                cat.icon = emojiSelecionado;
-            } else {
-                cats.push({
-                    id: Math.max(...cats.map(c => c.id), 0) + 1,
-                    nome,
-                    icon: emojiSelecionado
-                });
-            }
-            localStorage.setItem('categorias', JSON.stringify(cats));
-            fecharModal('modalNovaCategoria');
-            renderizarCategorias();
-            atualizarSelect();
-            atualizarDashboard();
-        }
-
         function deletarCategoria(id) {
             if (!confirm('Deletar categoria?')) return;
             let cats = carregarCategorias();
             cats = cats.filter(c => c.id !== id);
             localStorage.setItem('categorias', JSON.stringify(cats));
-            renderizarCategorias();
+            renderizarCategoriasSidebar();
             atualizarSelect();
         }
 
@@ -645,7 +733,7 @@
                 descricao: desc,
                 categoria: cat,
                 valor: val,
-                data: new Date().toLocaleDateString('pt-BR')
+                 new Date().toLocaleDateString('pt-BR')
             });
             localStorage.setItem('despesas', JSON.stringify(despesas));
 
@@ -679,7 +767,7 @@
             if (despesas.length === 0) {
                 lista.innerHTML = '<div class="empty-state">Nenhuma despesa registrada</div>';
             } else {
-                lista.innerHTML = despesas.slice().reverse().map(d => `
+                lista.innerHTML = despesas.slice().reverse().slice(0, 10).map(d => `
                     <div class="expense-item">
                         <div class="expense-info">
                             <div class="expense-name">${d.descricao}</div>
@@ -697,7 +785,7 @@
         }
 
         window.onclick = (e) => {
-            ['modalEditarSaldo', 'modalNovaCategoria'].forEach(id => {
+            ['modalEditarSaldo'].forEach(id => {
                 if (e.target.id === id) fecharModal(id);
             });
         };
