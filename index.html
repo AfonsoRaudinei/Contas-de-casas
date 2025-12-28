@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Financeiro - Casa | Raudinei</title>
+    <title>Dashboard Financeiro | Raudinei</title>
     <style>
         * {
             margin: 0;
@@ -13,643 +13,700 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(180deg, #F5F5F7 0%, #E5E5E7 100%);
-            color: #1D1D1F;
+            background: linear-gradient(135deg, #f8f9fc 0%, #f0f2f7 100%);
+            color: #0d1117;
             min-height: 100vh;
-            padding: 20px;
-        }
-
-        .header {
-            background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
-            border-radius: 18px;
-            padding: 32px 24px;
-            margin-bottom: 28px;
-            color: white;
-            text-align: center;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0, 122, 255, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #007AFF, #0051D5);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .header p {
-            font-size: 15px;
-            opacity: 0.85;
-            line-height: 1.5;
+            padding: 24px 16px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(16px);
-            border-radius: 18px;
-            padding: 28px;
+        /* HEADER */
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #0d1117;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* CARDS GRID */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
             margin-bottom: 24px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0d1117;
+            margin-bottom: 8px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+        }
+
+        .card-value.positive {
+            color: #10b981;
+        }
+
+        .card-value.negative {
+            color: #ef4444;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-icon {
+            background: #f3f4f6;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: #e5e7eb;
+        }
+
+        /* SECTION */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 24px;
         }
 
         .section-title {
-            font-size: 0.75em;
-            color: #86868B;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            font-size: 16px;
             font-weight: 600;
             margin-bottom: 20px;
+            color: #0d1117;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .section-title::before {
-            content: '';
-            width: 3px;
-            height: 16px;
-            background: linear-gradient(180deg, #007AFF, #0051D5);
-            border-radius: 2px;
-        }
-
         /* FORM */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-label {
-            font-size: 0.9em;
-            color: #86868B;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            margin-bottom: 8px;
             display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 12px;
         }
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #D1D1D6;
-            border-radius: 10px;
-            background: #FFFFFF;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #007AFF;
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-        }
-
-        input[type="number"] {
-            max-width: 140px;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px 24px;
+        /* BUTTONS */
+        .btn {
+            padding: 10px 16px;
             border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
-            color: white;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-            transition: all 0.2s;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            width: 100%;
         }
 
-        /* GRID DE RESUMO */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+        .btn-primary:hover {
+            background: #2563eb;
         }
 
-        .summary-card {
-            background: linear-gradient(135deg, rgba(0, 122, 255, 0.05), rgba(0, 122, 255, 0.02));
-            padding: 20px;
-            border-radius: 14px;
-            border: 1px solid rgba(0, 122, 255, 0.1);
-            text-align: center;
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
         }
 
-        .summary-label {
-            font-size: 0.8em;
-            color: #86868B;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* LISTA DE DESPESAS */
+        .expense-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-name {
+            font-size: 14px;
             font-weight: 600;
+            color: #0d1117;
+        }
+
+        .expense-meta {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .expense-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #3b82f6;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            margin-right: 12px;
+        }
+
+        /* CATEGORIAS GRID */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .category-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .category-item:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .category-icon {
+            font-size: 28px;
             margin-bottom: 8px;
         }
 
-        .summary-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: #1D1D1F;
+        .category-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0d1117;
+            margin-bottom: 8px;
+            word-break: break-word;
         }
 
-        .summary-value.positive {
-            color: #34C759;
+        .category-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
         }
 
-        .summary-value.negative {
-            color: #FF3B30;
-        }
-
-        /* TIMELINE */
-        .timeline {
-            position: relative;
-            padding: 30px 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 40px;
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
             top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, #007AFF, #0051D5, #34C759);
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
         }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 32px;
-            padding-left: 100px;
-            opacity: 0.85;
-            transition: all 0.3s ease;
-        }
-
-        .timeline-item:hover {
-            opacity: 1;
-            transform: translateX(4px);
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: 22px;
-            top: 4px;
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #007AFF, #0051D5);
-            border-radius: 50%;
+        .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-            border: 3px solid white;
         }
 
-        .timeline-content {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,245,247,0.98) 100%);
-            padding: 16px;
+        .modal-content {
+            background: white;
             border-radius: 12px;
-            border-left: 4px solid #007AFF;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .timeline-text {
-            flex: 1;
-        }
-
-        .timeline-date {
-            font-size: 0.75em;
-            color: #86868B;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .timeline-title {
-            font-size: 1em;
-            font-weight: 600;
-            color: #1D1D1F;
-            margin-bottom: 4px;
-        }
-
-        .timeline-desc {
-            font-size: 0.9em;
-            color: #555;
-        }
-
-        .timeline-value {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #007AFF;
-            white-space: nowrap;
-            margin-left: 16px;
-        }
-
-        /* MAPA MENTAL */
-        .mindmap-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: auto;
-        }
-
-        .mindmap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            min-width: min-content;
-        }
-
-        .mindmap-center {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #007AFF, #0051D5);
-            border-radius: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 36px;
-            font-weight: 700;
-            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.3);
-            text-align: center;
-        }
-
-        .mindmap-branches {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .mindmap-branch {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FF 100%);
-            padding: 16px;
-            border-radius: 12px;
-            border-left: 4px solid #007AFF;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .mindmap-branch:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.2);
-        }
-
-        .branch-title {
-            font-size: 0.85em;
-            color: #0051D5;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .branch-value {
-            font-size: 1.2em;
-            color: #007AFF;
-            font-weight: 700;
-        }
-
-        /* TABELA */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-        }
-
-        th {
-            background: linear-gradient(180deg, #F5F5F7, #E5E5E7);
-            padding: 14px;
-            text-align: left;
-            font-size: 0.8em;
-            color: #86868B;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            border-bottom: 2px solid #D1D1D6;
-        }
-
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #E5E5E7;
-            font-size: 0.95em;
-        }
-
-        tr:hover {
-            background: rgba(0, 122, 255, 0.02);
-        }
-
-        .btn-delete {
-            background: #FF3B30;
-            color: white;
+        .close-btn {
+            background: none;
             border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 0.85em;
+            color: #9ca3af;
+        }
+
+        .close-btn:hover {
+            color: #374151;
+        }
+
+        /* EMOJI PICKER */
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .emoji-btn {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 20px;
             transition: all 0.2s;
         }
 
-        .btn-delete:hover {
-            background: #C62828;
+        .emoji-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .emoji-btn.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* EDIT SALDO */
+        .edit-saldo-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .edit-saldo-container input {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #9ca3af;
+            padding: 32px 16px;
         }
 
         @media (max-width: 768px) {
-            .header h1 { font-size: 24px; }
+            .cards-grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
-            .timeline::before { left: 20px; }
-            .timeline-item { padding-left: 70px; }
-            .mindmap-branches { grid-template-columns: 1fr; }
+            .categories-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="badge">
-                <span>💰</span>
-                <span>Controle Residencial</span>
-            </div>
-            <h1>Dashboard Financeiro</h1>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>💰 Dashboard Financeiro</h1>
             <p>Raudinei Afonso - Controle de Despesas</p>
         </div>
-    </div>
 
-    <div class="container">
-        <!-- FORMULÁRIO -->
-        <div class="card">
+        <!-- CARDS PRINCIPAIS -->
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-label">Entradas</div>
+                <div class="card-value" id="entradas">R$ 8.830,00</div>
+                <div class="card-actions">
+                    <button class="btn-icon" onclick="abrirEditarSaldo()">✏️</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-label">Despesas</div>
+                <div class="card-value negative" id="despesas">R$ 0,00</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Saldo</div>
+                <div class="card-value positive" id="saldo">R$ 8.830,00</div>
+            </div>
+        </div>
+
+        <!-- NOVA DESPESA -->
+        <div class="section">
             <div class="section-title">➕ Nova Despesa</div>
             <div class="form-group">
                 <label class="form-label">Descrição</label>
-                <input id="desc" type="text" placeholder="Ex: Luz, Água, Supermercado...">
+                <input id="descricao" type="text" placeholder="Ex: Almoço, Farmácia...">
             </div>
             <div class="form-row">
                 <div>
                     <label class="form-label">Categoria</label>
-                    <select id="cat">
-                        <option value="">Selecione...</option>
-                        <option value="Casa">🏠 Casa</option>
-                        <option value="Supermercado">🛒 Supermercado</option>
-                        <option value="Saúde">🏥 Saúde</option>
-                        <option value="Utilidades">🔌 Utilidades</option>
-                        <option value="Internet">📡 Internet</option>
-                        <option value="Educação">📚 Educação</option>
-                        <option value="Lazer">🎬 Lazer</option>
-                        <option value="Outros">📋 Outros</option>
-                    </select>
+                    <select id="categoria"></select>
                 </div>
                 <div>
                     <label class="form-label">Valor (R$)</label>
-                    <input id="val" type="number" step="0.01" placeholder="0,00" maxlength="7">
+                    <input id="valor" type="number" step="0.01" placeholder="0,00">
                 </div>
             </div>
-            <button onclick="adicionarDespesa()">➕ Adicionar</button>
+            <button class="btn btn-primary" onclick="adicionarDespesa()">Adicionar Despesa</button>
         </div>
 
-        <!-- RESUMO -->
-        <div class="summary-grid">
-            <div class="summary-card">
-                <div class="summary-label">Entradas</div>
-                <div class="summary-value" id="ent">R$ 0,00</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-label">Despesas</div>
-                <div class="summary-value negative" id="desp">R$ 0,00</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-label">Saldo</div>
-                <div class="summary-value positive" id="saldo">R$ 0,00</div>
-            </div>
+        <!-- GERENCIAR CATEGORIAS -->
+        <div class="section">
+            <div class="section-title">⚙️ Categorias</div>
+            <button class="btn btn-primary" style="margin-bottom: 16px;" onclick="abrirNovaCategoria()">➕ Nova Categoria</button>
+            <div class="categories-grid" id="categoriesGrid"></div>
         </div>
 
-        <!-- MAPA MENTAL DE CATEGORIAS -->
-        <div class="card">
-            <div class="section-title">🧠 Gastos por Categoria</div>
-            <div class="mindmap-container">
-                <div class="mindmap">
-                    <div class="mindmap-center">💸</div>
-                    <div class="mindmap-branches" id="mindmapBranches">
-                        <div class="mindmap-branch">
-                            <div class="branch-title">Casa</div>
-                            <div class="branch-value" data-cat="Casa">R$ 0</div>
-                        </div>
-                        <div class="mindmap-branch">
-                            <div class="branch-title">Supermercado</div>
-                            <div class="branch-value" data-cat="Supermercado">R$ 0</div>
-                        </div>
-                        <div class="mindmap-branch">
-                            <div class="branch-title">Saúde</div>
-                            <div class="branch-value" data-cat="Saúde">R$ 0</div>
-                        </div>
-                        <div class="mindmap-branch">
-                            <div class="branch-title">Utilidades</div>
-                            <div class="branch-value" data-cat="Utilidades">R$ 0</div>
-                        </div>
-                        <div class="mindmap-branch">
-                            <div class="branch-title">Internet</div>
-                            <div class="branch-value" data-cat="Internet">R$ 0</div>
-                        </div>
-                        <div class="mindmap-branch">
-                            <div class="branch-title">Outros</div>
-                            <div class="branch-value" data-cat="Outros">R$ 0</div>
-                        </div>
-                    </div>
-                </div>
+        <!-- DESPESAS RECENTES -->
+        <div class="section">
+            <div class="section-title">📋 Despesas Recentes</div>
+            <div id="despesasLista" class="expense-list">
+                <div class="empty-state">Nenhuma despesa registrada</div>
             </div>
         </div>
+    </div>
 
-        <!-- TIMELINE DE DESPESAS -->
-        <div class="card">
-            <div class="section-title">📅 Últimas Despesas</div>
-            <div class="timeline" id="timeline">
-                <p style="text-align: center; color: #86868B;">Nenhuma despesa registrada</p>
+    <!-- MODAL EDITAR SALDO -->
+    <div id="modalEditarSaldo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Editar Entradas</span>
+                <button class="close-btn" onclick="fecharModal('modalEditarSaldo')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Valor de Entradas (R$)</label>
+                <input id="novoSaldo" type="number" step="0.01" placeholder="0,00">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button class="btn btn-secondary" onclick="fecharModal('modalEditarSaldo')">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarNovoSaldo()">Salvar</button>
             </div>
         </div>
+    </div>
 
-        <!-- TABELA COMPLETA -->
-        <div class="card">
-            <div class="section-title">📋 Todas as Despesas</div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Categoria</th>
-                            <th>Valor</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaBody">
-                    </tbody>
-                </table>
+    <!-- MODAL NOVA CATEGORIA -->
+    <div id="modalNovaCategoria" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modalCatTitulo">Nova Categoria</span>
+                <button class="close-btn" onclick="fecharModal('modalNovaCategoria')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nome</label>
+                <input id="nomeCat" type="text" placeholder="Ex: Casa, Alimentação...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Selecione um Ícone</label>
+                <div class="emoji-grid" id="emojiGrid"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button class="btn btn-secondary" onclick="fecharModal('modalNovaCategoria')">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarCategoria()">Salvar</button>
             </div>
         </div>
     </div>
 
     <script>
-        const renda = 8830;
+        const emojis = ['🏠', '🛒', '🏥', '🔌', '📡', '📚', '🎬', '🍽️', '🚗', '✈️', '👕', '💻', '🎮', '📱', '💄', '⚽', '🎸', '📖', '🧘', '💊', '☕', '🍕', '🍰', '🎂', '🎁', '💐', '🌸', '🎄', '🎃', '🦃', '🎆', '🎇', '🎉', '🎊', '🎈', '🎀', '🎯', '🎲', '🧩', '🎪', '🎭', '🎨', '🖼️', '🎤', '🎧', '🎵', '🎶', '🏆', '🥇', '🥈', '🥉', '⭐', '✨', '💫', '⚡', '🔥', '💥', '✅', '❌', '⚠️', '🔔', '💡', '🔐', '🔓', '🗝️', '🔧', '🔨'];
+        
+        let saldoGlobal = 8830;
+        let editandoCat = null;
+        let emojiSelecionado = null;
 
-        function adicionarDespesa() {
-            const desc = document.getElementById('desc').value.trim();
-            const cat = document.getElementById('cat').value;
-            const val = parseFloat(document.getElementById('val').value) || 0;
+        function inicializar() {
+            carregarCategorias();
+            atualizarSelect();
+            renderizarCategorias();
+            atualizarDashboard();
+        }
 
-            if (!desc || !cat || val <= 0) {
-                alert('Preencha todos os campos corretamente!');
+        function carregarCategorias() {
+            let cats = localStorage.getItem('categorias');
+            if (!cats) {
+                const padrao = [
+                    { id: 1, nome: 'Casa', icon: '🏠' },
+                    { id: 2, nome: 'Supermercado', icon: '🛒' },
+                    { id: 3, nome: 'Saúde', icon: '🏥' },
+                    { id: 4, nome: 'Utilidades', icon: '🔌' },
+                    { id: 5, nome: 'Internet', icon: '📡' },
+                    { id: 6, nome: 'Educação', icon: '📚' },
+                    { id: 7, nome: 'Lazer', icon: '🎬' },
+                    { id: 8, nome: 'Outros', icon: '📋' }
+                ];
+                localStorage.setItem('categorias', JSON.stringify(padrao));
+                return padrao;
+            }
+            return JSON.parse(cats);
+        }
+
+        function atualizarSelect() {
+            const cats = carregarCategorias();
+            const select = document.getElementById('categoria');
+            select.innerHTML = '<option value="">Selecione...</option>' + 
+                cats.map(c => `<option value="${c.nome}">${c.icon} ${c.nome}</option>`).join('');
+        }
+
+        function renderizarCategorias() {
+            const cats = carregarCategorias();
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = cats.map(cat => `
+                <div class="category-item">
+                    <div class="category-icon">${cat.icon}</div>
+                    <div class="category-name">${cat.nome}</div>
+                    <div class="category-actions">
+                        <button class="btn btn-secondary btn-small" onclick="editarCategoria(${cat.id})">✎</button>
+                        <button class="btn btn-secondary btn-small" onclick="deletarCategoria(${cat.id})">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function abrirEditarSaldo() {
+            document.getElementById('novoSaldo').value = saldoGlobal;
+            document.getElementById('modalEditarSaldo').classList.add('active');
+        }
+
+        function salvarNovoSaldo() {
+            const novo = parseFloat(document.getElementById('novoSaldo').value);
+            if (isNaN(novo) || novo < 0) {
+                alert('Valor inválido!');
+                return;
+            }
+            saldoGlobal = novo;
+            localStorage.setItem('saldoGlobal', novo);
+            fecharModal('modalEditarSaldo');
+            atualizarDashboard();
+        }
+
+        function abrirNovaCategoria() {
+            editandoCat = null;
+            document.getElementById('modalCatTitulo').innerText = 'Nova Categoria';
+            document.getElementById('nomeCat').value = '';
+            emojiSelecionado = null;
+            renderizarEmojis();
+            document.getElementById('modalNovaCategoria').classList.add('active');
+        }
+
+        function editarCategoria(id) {
+            const cats = carregarCategorias();
+            const cat = cats.find(c => c.id === id);
+            if (!cat) return;
+
+            editandoCat = id;
+            document.getElementById('modalCatTitulo').innerText = 'Editar Categoria';
+            document.getElementById('nomeCat').value = cat.nome;
+            emojiSelecionado = cat.icon;
+            renderizarEmojis();
+            document.getElementById('modalNovaCategoria').classList.add('active');
+        }
+
+        function renderizarEmojis() {
+            const grid = document.getElementById('emojiGrid');
+            grid.innerHTML = emojis.map(e => `
+                <button type="button" class="emoji-btn ${e === emojiSelecionado ? 'selected' : ''}" 
+                        onclick="selecionarEmoji('${e}')">${e}</button>
+            `).join('');
+        }
+
+        function selecionarEmoji(emoji) {
+            emojiSelecionado = emoji;
+            renderizarEmojis();
+        }
+
+        function salvarCategoria() {
+            const nome = document.getElementById('nomeCat').value.trim();
+            if (!nome || !emojiSelecionado) {
+                alert('Preencha nome e selecione um ícone!');
                 return;
             }
 
-            let dados = JSON.parse(localStorage.getItem('despesas') || '[]');
-            dados.push({
+            const cats = carregarCategorias();
+            if (editandoCat) {
+                const cat = cats.find(c => c.id === editandoCat);
+                cat.nome = nome;
+                cat.icon = emojiSelecionado;
+            } else {
+                cats.push({
+                    id: Math.max(...cats.map(c => c.id), 0) + 1,
+                    nome,
+                    icon: emojiSelecionado
+                });
+            }
+            localStorage.setItem('categorias', JSON.stringify(cats));
+            fecharModal('modalNovaCategoria');
+            renderizarCategorias();
+            atualizarSelect();
+            atualizarDashboard();
+        }
+
+        function deletarCategoria(id) {
+            if (!confirm('Deletar categoria?')) return;
+            let cats = carregarCategorias();
+            cats = cats.filter(c => c.id !== id);
+            localStorage.setItem('categorias', JSON.stringify(cats));
+            renderizarCategorias();
+            atualizarSelect();
+        }
+
+        function adicionarDespesa() {
+            const desc = document.getElementById('descricao').value.trim();
+            const cat = document.getElementById('categoria').value;
+            const val = parseFloat(document.getElementById('valor').value);
+
+            if (!desc || !cat || !val || val <= 0) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            const despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            despesas.push({
                 id: Date.now(),
                 descricao: desc,
                 categoria: cat,
                 valor: val,
                 data: new Date().toLocaleDateString('pt-BR')
             });
-            localStorage.setItem('despesas', JSON.stringify(dados));
+            localStorage.setItem('despesas', JSON.stringify(despesas));
 
-            document.getElementById('desc').value = '';
-            document.getElementById('cat').value = '';
-            document.getElementById('val').value = '';
+            document.getElementById('descricao').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('valor').value = '';
 
-            carregar();
+            atualizarDashboard();
         }
 
         function deletarDespesa(id) {
-            let dados = JSON.parse(localStorage.getItem('despesas') || '[]');
-            dados = dados.filter(d => d.id !== id);
-            localStorage.setItem('despesas', JSON.stringify(dados));
-            carregar();
+            let despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            despesas = despesas.filter(d => d.id !== id);
+            localStorage.setItem('despesas', JSON.stringify(despesas));
+            atualizarDashboard();
         }
 
-        function carregar() {
-            let dados = JSON.parse(localStorage.getItem('despesas') || '[]');
-            let total = 0;
-            let cat = {};
+        function atualizarDashboard() {
+            const despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            const total = despesas.reduce((sum, d) => sum + d.valor, 0);
+            const saldo = saldoGlobal - total;
 
-            // Atualizar timeline (últimas 5)
-            const timeline = document.getElementById('timeline');
-            timeline.innerHTML = dados.slice().reverse().slice(0, 5).map((d, i) => {
-                total += d.valor;
-                cat[d.categoria] = (cat[d.categoria] || 0) + d.valor;
-                return `
-                    <div class="timeline-item">
-                        <div class="timeline-dot">${i === 0 ? '📌' : '✓'}</div>
-                        <div class="timeline-content">
-                            <div class="timeline-text">
-                                <div class="timeline-date">${d.data}</div>
-                                <div class="timeline-title">${d.descricao}</div>
-                                <div class="timeline-desc">${d.categoria}</div>
-                            </div>
-                            <div class="timeline-value">R$ ${d.valor.toFixed(2)}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            if (dados.length === 0) {
-                timeline.innerHTML = '<p style="text-align: center; color: #86868B;">Nenhuma despesa registrada</p>';
-            }
-
-            // Recalcular totais
-            total = dados.reduce((sum, d) => sum + d.valor, 0);
-            cat = {};
-            dados.forEach(d => {
-                cat[d.categoria] = (cat[d.categoria] || 0) + d.valor;
-            });
-
-            // Atualizar cards
-            document.getElementById('ent').innerText = `R$ ${renda.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('desp').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-
-            const saldo = renda - total;
+            document.getElementById('entradas').innerText = `R$ ${saldoGlobal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('despesas').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            
             const saldoEl = document.getElementById('saldo');
             saldoEl.innerText = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            saldoEl.classList.add(saldo >= 0 ? 'positive' : 'negative');
+            saldoEl.className = `card-value ${saldo >= 0 ? 'positive' : 'negative'}`;
 
-            // Atualizar mapa mental
-            document.querySelectorAll('.branch-value').forEach(el => {
-                const categoria = el.dataset.cat;
-                const valor = cat[categoria] || 0;
-                el.innerText = `R$ ${valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            });
-
-            // Atualizar tabela
-            const tbody = document.getElementById('tabelaBody');
-            tbody.innerHTML = dados.map(d => `
-                <tr>
-                    <td>${d.data}</td>
-                    <td>${d.descricao}</td>
-                    <td>${d.categoria}</td>
-                    <td>R$ ${d.valor.toFixed(2)}</td>
-                    <td><button class="btn-delete" onclick="deletarDespesa(${d.id})">✕ Remover</button></td>
-                </tr>
-            `).join('');
+            const lista = document.getElementById('despesasLista');
+            if (despesas.length === 0) {
+                lista.innerHTML = '<div class="empty-state">Nenhuma despesa registrada</div>';
+            } else {
+                lista.innerHTML = despesas.slice().reverse().map(d => `
+                    <div class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-name">${d.descricao}</div>
+                            <div class="expense-meta">${d.categoria} • ${d.data}</div>
+                        </div>
+                        <div class="expense-value">R$ ${d.valor.toFixed(2)}</div>
+                        <button class="btn-icon" onclick="deletarDespesa(${d.id})" style="background: #fee2e2;">🗑️</button>
+                    </div>
+                `).join('');
+            }
         }
 
-        carregar();
+        function fecharModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        window.onclick = (e) => {
+            ['modalEditarSaldo', 'modalNovaCategoria'].forEach(id => {
+                if (e.target.id === id) fecharModal(id);
+            });
+        };
+
+        // Carregar saldo anterior se existir
+        const saldoSalvo = localStorage.getItem('saldoGlobal');
+        if (saldoSalvo) saldoGlobal = parseFloat(saldoSalvo);
+
+        inicializar();
     </script>
 </body>
 </html>
