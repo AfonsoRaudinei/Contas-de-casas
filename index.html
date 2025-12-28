@@ -2,295 +2,586 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Financeiro - Raudinei 🌱</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard Financeiro - Casa | Raudinei</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Arial;
-            background: linear-gradient(180deg, #f5f5f7 0%, #e5e5e7 100%);
+        * {
             margin: 0;
-            padding: 20px;
-            color: #1d1d1f;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(180deg, #F5F5F7 0%, #E5E5E7 100%);
+            color: #1D1D1F;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
         .header {
             background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
             border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 32px 24px;
+            margin-bottom: 28px;
             color: white;
             text-align: center;
             box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
         }
-        
-        .logo {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #34C759, #30D158);
-            border-radius: 16px;
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 28px;
+            gap: 8px;
+            background: linear-gradient(135deg, #007AFF, #0051D5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
             margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(52, 199, 89, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
         }
-        
+
         .header h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            margin: 0 0 8px 0;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
-        
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(16px);
             border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
             border: 1px solid rgba(255,255,255,0.3);
         }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-        
+
         .section-title {
             font-size: 0.75em;
-            color: #86868b;
+            color: #86868B;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             font-weight: 600;
-            margin-bottom: 16px;
-        }
-        
-        .form-row {
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px solid #e5e5e7;
+            gap: 8px;
         }
-        
-        .form-row:last-child { border-bottom: none; }
-        
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(180deg, #007AFF, #0051D5);
+            border-radius: 2px;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
         .form-label {
-            width: 100px;
-            font-size: 15px;
+            font-size: 0.9em;
+            color: #86868B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             font-weight: 600;
-            color: #1d1d1f;
+            margin-bottom: 8px;
+            display: block;
         }
-        
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
         input, select {
-            flex: 1;
+            width: 100%;
             padding: 12px;
-            margin-left: 16px;
+            border: 1px solid #D1D1D6;
+            border-radius: 10px;
+            background: #FFFFFF;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        input[type="number"] {
+            max-width: 140px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 24px;
             border: none;
             border-radius: 12px;
-            background: rgba(0,0,0,0.04);
-            font-size: 16px;
-            text-align: right;
-        }
-        
-        input[type="number"] { max-width: 140px; }
-        
-        button {
-            margin-top: 20px;
-            padding: 16px 28px;
-            border: none;
-            border-radius: 14px;
             background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
             color: white;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
-            width: 100%;
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
-            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            transition: all 0.2s;
+            cursor: pointer;
         }
-        
+
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.45);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
         }
-        
-        .value {
-            font-size: 32px;
-            font-weight: 800;
-            text-align: center;
-            margin: 16px 0;
-            line-height: 1.2;
+
+        /* GRID DE RESUMO */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        
-        .positive { color: #30D158; }
-        .negative { color: #FF3B30; }
-        .neutral { color: #1d1d1f; }
-        
-        .chart-container {
-            position: relative;
-            height: 320px;
-            margin: 20px 0;
-        }
-        
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        
-        th {
-            color: #86868b;
-            font-size: 0.8em;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            font-weight: 600;
-            padding: 16px 0 12px 0;
-            text-align: left;
-        }
-        
-        td {
-            padding: 14px 0;
-            border-bottom: 1px solid #e5e5e7;
-            font-size: 15px;
-        }
-        
-        .top-cat {
-            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
-            border: 1px solid rgba(255, 193, 7, 0.3);
+
+        .summary-card {
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.05), rgba(0, 122, 255, 0.02));
             padding: 20px;
             border-radius: 14px;
+            border: 1px solid rgba(0, 122, 255, 0.1);
             text-align: center;
-            box-shadow: 0 4px 16px rgba(255, 152, 0, 0.12);
-            border-left: 5px solid #ffc107;
         }
-        
+
+        .summary-label {
+            font-size: 0.8em;
+            color: #86868B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1D1D1F;
+        }
+
+        .summary-value.positive {
+            color: #34C759;
+        }
+
+        .summary-value.negative {
+            color: #FF3B30;
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 40px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #007AFF, #0051D5, #34C759);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 32px;
+            padding-left: 100px;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 22px;
+            top: 4px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #007AFF, #0051D5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            border: 3px solid white;
+        }
+
+        .timeline-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,245,247,0.98) 100%);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #007AFF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timeline-text {
+            flex: 1;
+        }
+
+        .timeline-date {
+            font-size: 0.75em;
+            color: #86868B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: #1D1D1F;
+            margin-bottom: 4px;
+        }
+
+        .timeline-desc {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .timeline-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #007AFF;
+            white-space: nowrap;
+            margin-left: 16px;
+        }
+
+        /* MAPA MENTAL */
+        .mindmap-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .mindmap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            min-width: min-content;
+        }
+
+        .mindmap-center {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #007AFF, #0051D5);
+            border-radius: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: 700;
+            box-shadow: 0 12px 32px rgba(0, 122, 255, 0.3);
+            text-align: center;
+        }
+
+        .mindmap-branches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .mindmap-branch {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FF 100%);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #007AFF;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .mindmap-branch:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.2);
+        }
+
+        .branch-title {
+            font-size: 0.85em;
+            color: #0051D5;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .branch-value {
+            font-size: 1.2em;
+            color: #007AFF;
+            font-weight: 700;
+        }
+
+        /* TABELA */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        th {
+            background: linear-gradient(180deg, #F5F5F7, #E5E5E7);
+            padding: 14px;
+            text-align: left;
+            font-size: 0.8em;
+            color: #86868B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            border-bottom: 2px solid #D1D1D6;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #E5E5E7;
+            font-size: 0.95em;
+        }
+
+        tr:hover {
+            background: rgba(0, 122, 255, 0.02);
+        }
+
+        .btn-delete {
+            background: #FF3B30;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #C62828;
+        }
+
         @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-            .value { font-size: 26px; }
+            .header h1 { font-size: 24px; }
+            .form-row { grid-template-columns: 1fr; }
+            .timeline::before { left: 20px; }
+            .timeline-item { padding-left: 70px; }
+            .mindmap-branches { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">🌱</div>
-        <h1>Dashboard Financeiro</h1>
-        <p>Raudinei Afonso - Controle Agrícola</p>
+        <div class="header-content">
+            <div class="badge">
+                <span>💰</span>
+                <span>Controle Residencial</span>
+            </div>
+            <h1>Dashboard Financeiro</h1>
+            <p>Raudinei Afonso - Controle de Despesas</p>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="section-title">Nova Despesa</div>
-        <div class="form-row">
-            <div class="form-label">Descrição</div>
-            <input id="desc" placeholder="Ex: Fertilizante NPK">
-        </div>
-        <div class="form-row">
-            <div class="form-label">Categoria</div>
-            <select id="cat">
-                <option value="">Selecione...</option>
-                <option value="Casa">🏠 Casa</option>
-                <option value="Laura">👨‍👩‍👧 Laura</option>
-                <option value="Supermercado">🛒 Supermercado</option>
-                <option value="Cartão">💳 Cartão</option>
-                <option value="Saúde">🏥 Saúde</option>
-                <option value="Previdência">💰 Previdência</option>
-                <option value="Streaming">📺 Streaming</option>
-                <option value="Fertilizantes">🌱 Fertilizantes</option>
-                <option value="Sementes">🌾 Sementes</option>
-                <option value="Outros">📋 Outros</option>
-            </select>
-        </div>
-        <div class="form-row">
-            <div class="form-label">Valor</div>
-            <input id="val" type="number" step="0.01" placeholder="0,00">
-        </div>
-        <button id="btnAdicionar">➕ Adicionar Despesa</button>
-    </div>
-
-    <div class="grid">
+    <div class="container">
+        <!-- FORMULÁRIO -->
         <div class="card">
-            <div class="section-title">Entradas</div>
-            <div id="ent" class="value neutral">R$ 8.830,00</div>
+            <div class="section-title">➕ Nova Despesa</div>
+            <div class="form-group">
+                <label class="form-label">Descrição</label>
+                <input id="desc" type="text" placeholder="Ex: Luz, Água, Supermercado...">
+            </div>
+            <div class="form-row">
+                <div>
+                    <label class="form-label">Categoria</label>
+                    <select id="cat">
+                        <option value="">Selecione...</option>
+                        <option value="Casa">🏠 Casa</option>
+                        <option value="Supermercado">🛒 Supermercado</option>
+                        <option value="Saúde">🏥 Saúde</option>
+                        <option value="Utilidades">🔌 Utilidades</option>
+                        <option value="Internet">📡 Internet</option>
+                        <option value="Educação">📚 Educação</option>
+                        <option value="Lazer">🎬 Lazer</option>
+                        <option value="Outros">📋 Outros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Valor (R$)</label>
+                    <input id="val" type="number" step="0.01" placeholder="0,00" maxlength="7">
+                </div>
+            </div>
+            <button onclick="adicionarDespesa()">➕ Adicionar</button>
         </div>
+
+        <!-- RESUMO -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-label">Entradas</div>
+                <div class="summary-value" id="ent">R$ 0,00</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Despesas</div>
+                <div class="summary-value negative" id="desp">R$ 0,00</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Saldo</div>
+                <div class="summary-value positive" id="saldo">R$ 0,00</div>
+            </div>
+        </div>
+
+        <!-- MAPA MENTAL DE CATEGORIAS -->
         <div class="card">
-            <div class="section-title">Despesas</div>
-            <div id="desp" class="value neutral">R$ 0,00</div>
+            <div class="section-title">🧠 Gastos por Categoria</div>
+            <div class="mindmap-container">
+                <div class="mindmap">
+                    <div class="mindmap-center">💸</div>
+                    <div class="mindmap-branches" id="mindmapBranches">
+                        <div class="mindmap-branch">
+                            <div class="branch-title">Casa</div>
+                            <div class="branch-value" data-cat="Casa">R$ 0</div>
+                        </div>
+                        <div class="mindmap-branch">
+                            <div class="branch-title">Supermercado</div>
+                            <div class="branch-value" data-cat="Supermercado">R$ 0</div>
+                        </div>
+                        <div class="mindmap-branch">
+                            <div class="branch-title">Saúde</div>
+                            <div class="branch-value" data-cat="Saúde">R$ 0</div>
+                        </div>
+                        <div class="mindmap-branch">
+                            <div class="branch-title">Utilidades</div>
+                            <div class="branch-value" data-cat="Utilidades">R$ 0</div>
+                        </div>
+                        <div class="mindmap-branch">
+                            <div class="branch-title">Internet</div>
+                            <div class="branch-value" data-cat="Internet">R$ 0</div>
+                        </div>
+                        <div class="mindmap-branch">
+                            <div class="branch-title">Outros</div>
+                            <div class="branch-value" data-cat="Outros">R$ 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- TIMELINE DE DESPESAS -->
         <div class="card">
-            <div class="section-title">Saldo</div>
-            <div id="saldo" class="value positive">R$ 8.830,00</div>
+            <div class="section-title">📅 Últimas Despesas</div>
+            <div class="timeline" id="timeline">
+                <p style="text-align: center; color: #86868B;">Nenhuma despesa registrada</p>
+            </div>
         </div>
-    </div>
 
-    <div class="card">
-        <div class="section-title">📊 Gastos por Categoria</div>
-        <div class="chart-container">
-            <canvas id="pizzaChart"></canvas>
+        <!-- TABELA COMPLETA -->
+        <div class="card">
+            <div class="section-title">📋 Todas as Despesas</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-
-    <div class="card">
-        <div class="section-title">🏆 Categoria que + Gastou</div>
-        <div id="top" class="top-cat">Nenhuma despesa registrada</div>
-    </div>
-
-    <div class="card">
-        <div class="section-title">📋 Despesas Lançadas</div>
-        <table id="lista">
-            <thead>
-                <tr>
-                    <th>Descrição</th>
-                    <th>Categoria</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
     </div>
 
     <script>
         const renda = 8830;
-        let pizzaChart = null;
 
-        function criarGrafico(dadosCat) {
-            const ctx = document.getElementById('pizzaChart').getContext('2d');
-            
-            if (pizzaChart) pizzaChart.destroy();
-            
-            const cores = [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
-                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
-            ];
-            
-            pizzaChart = new Chart(ctx, {
-                type: 'doughnut',
-                 {
-                    labels: Object.keys(dadosCat),
-                    datasets: [{
-                         Object.values(dadosCat),
-                        backgroundColor: cores.slice(0, Object.keys(dadosCat).length),
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true,
-                                font: { size: 13 }
-                            }
-                        }
-                    }
-                }
+        function adicionarDespesa() {
+            const desc = document.getElementById('desc').value.trim();
+            const cat = document.getElementById('cat').value;
+            const val = parseFloat(document.getElementById('val').value) || 0;
+
+            if (!desc || !cat || val <= 0) {
+                alert('Preencha todos os campos corretamente!');
+                return;
+            }
+
+            let dados = JSON.parse(localStorage.getItem('despesas') || '[]');
+            dados.push({
+                id: Date.now(),
+                descricao: desc,
+                categoria: cat,
+                valor: val,
+                data: new Date().toLocaleDateString('pt-BR')
             });
+            localStorage.setItem('despesas', JSON.stringify(dados));
+
+            document.getElementById('desc').value = '';
+            document.getElementById('cat').value = '';
+            document.getElementById('val').value = '';
+
+            carregar();
+        }
+
+        function deletarDespesa(id) {
+            let dados = JSON.parse(localStorage.getItem('despesas') || '[]');
+            dados = dados.filter(d => d.id !== id);
+            localStorage.setItem('despesas', JSON.stringify(dados));
+            carregar();
         }
 
         function carregar() {
@@ -298,75 +589,66 @@
             let total = 0;
             let cat = {};
 
-            const tbody = document.querySelector('#lista tbody');
-            tbody.innerHTML = '';
-
-            dados.forEach(d => {
+            // Atualizar timeline (últimas 5)
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = dados.slice().reverse().slice(0, 5).map((d, i) => {
                 total += d.valor;
                 cat[d.categoria] = (cat[d.categoria] || 0) + d.valor;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${d.descricao}</td>
-                    <td>${d.categoria}</td>
-                    <td style="text-align: right; font-weight: 600;">R$ ${d.valor.toFixed(2)}</td>
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot">${i === 0 ? '📌' : '✓'}</div>
+                        <div class="timeline-content">
+                            <div class="timeline-text">
+                                <div class="timeline-date">${d.data}</div>
+                                <div class="timeline-title">${d.descricao}</div>
+                                <div class="timeline-desc">${d.categoria}</div>
+                            </div>
+                            <div class="timeline-value">R$ ${d.valor.toFixed(2)}</div>
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+            }).join('');
+
+            if (dados.length === 0) {
+                timeline.innerHTML = '<p style="text-align: center; color: #86868B;">Nenhuma despesa registrada</p>';
+            }
+
+            // Recalcular totais
+            total = dados.reduce((sum, d) => sum + d.valor, 0);
+            cat = {};
+            dados.forEach(d => {
+                cat[d.categoria] = (cat[d.categoria] || 0) + d.valor;
             });
 
-            // Atualiza valores
-            document.getElementById('ent').innerText = `R$ ${renda.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('desp').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            // Atualizar cards
+            document.getElementById('ent').innerText = `R$ ${renda.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('desp').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            const s = renda - total;
-            const saldo = document.getElementById('saldo');
-            saldo.innerText = `R$ ${s.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            saldo.className = `value ${s >= 0 ? 'positive' : 'negative'}`;
+            const saldo = renda - total;
+            const saldoEl = document.getElementById('saldo');
+            saldoEl.innerText = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            saldoEl.classList.add(saldo >= 0 ? 'positive' : 'negative');
 
-            // Top categoria
-            let mCat = 'Nenhuma despesa', mVal = 0;
-            for(let k in cat) {
-                if(cat[k] > mVal) {
-                    mVal = cat[k];
-                    mCat = k;
-                }
-            }
-            document.getElementById('top').innerHTML = mCat === 'Nenhuma despesa' ? 
-                'Nenhuma despesa registrada' : 
-                `<strong>${mCat}</strong><br>R$ ${mVal.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            // Atualizar mapa mental
+            document.querySelectorAll('.branch-value').forEach(el => {
+                const categoria = el.dataset.cat;
+                const valor = cat[categoria] || 0;
+                el.innerText = `R$ ${valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            });
 
-            // Gráfico
-            if(Object.keys(cat).length > 0) {
-                criarGrafico(cat);
-            } else {
-                const ctx = document.getElementById('pizzaChart').getContext('2d');
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            }
+            // Atualizar tabela
+            const tbody = document.getElementById('tabelaBody');
+            tbody.innerHTML = dados.map(d => `
+                <tr>
+                    <td>${d.data}</td>
+                    <td>${d.descricao}</td>
+                    <td>${d.categoria}</td>
+                    <td>R$ ${d.valor.toFixed(2)}</td>
+                    <td><button class="btn-delete" onclick="deletarDespesa(${d.id})">✕ Remover</button></td>
+                </tr>
+            `).join('');
         }
 
-        document.getElementById('btnAdicionar').onclick = function() {
-            const descricao = document.getElementById('desc').value.trim();
-            const categoria = document.getElementById('cat').value;
-            const valor = parseFloat(document.getElementById('val').value) || 0;
-
-            if(!descricao || !categoria || valor <= 0) {
-                alert('✅ Preencha descrição, categoria e valor > 0');
-                return;
-            }
-
-            let dados = JSON.parse(localStorage.getItem('despesas') || '[]');
-            dados.push({descricao, categoria, valor,  new Date().toISOString()});
-            localStorage.setItem('despesas', JSON.stringify(dados));
-
-            // Limpa formulário
-            document.getElementById('desc').value = '';
-            document.getElementById('cat').value = '';
-            document.getElementById('val').value = '';
-            
-            carregar();
-        }
-
-        // Inicializa
         carregar();
     </script>
 </body>
