@@ -247,7 +247,15 @@
             font-size: 11px;
             color: #86868B;
             font-weight: 400;
+        }
+
+        .filter-select {
             margin-left: auto;
+            width: auto;
+            min-width: 120px;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
         }
 
         /* SIDEBAR */
@@ -504,6 +512,9 @@
             <div class="section-title">
                 📋 Despesas
                 <span class="expense-count" id="expenseCount"></span>
+                <select id="filtroCategoria" onchange="atualizarDashboard()" class="filter-select">
+                    <option value="">Todas</option>
+                </select>
             </div>
             <div class="expense-list-container">
                 <div id="despesasLista" class="expense-list">
@@ -566,6 +577,7 @@
         function inicializar() {
             carregarCategorias();
             atualizarSelect();
+            atualizarFiltroCategoria();
             renderizarCategoriasSidebar();
             renderizarEmojisSidebar();
             const saldoSalvo = localStorage.getItem('saldoGlobal');
@@ -642,6 +654,7 @@
             renderizarCategoriasSidebar();
             renderizarEmojisSidebar();
             atualizarSelect();
+            atualizarFiltroCategoria();
             switchTab('list');
             document.querySelector('.tab-btn').click();
         }
@@ -675,6 +688,7 @@
             localStorage.setItem('categorias', JSON.stringify(cats));
             renderizarCategoriasSidebar();
             atualizarSelect();
+            atualizarFiltroCategoria();
         }
 
         function adicionarDespesa() {
@@ -707,24 +721,36 @@
         }
 
         function atualizarDashboard() {
-            const despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
-            const total = despesas.reduce((sum, d) => sum + d.valor, 0);
-            const saldo = saldoGlobal - total;
+            const todasDespesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            const filtro = document.getElementById('filtroCategoria').value;
+            
+            // Filtra despesas se categoria selecionada
+            const despesas = filtro 
+                ? todasDespesas.filter(d => d.categoria === filtro)
+                : todasDespesas;
+            
+            // Sempre calcula total geral (sem filtro)
+            const totalGeral = todasDespesas.reduce((sum, d) => sum + d.valor, 0);
+            const totalFiltrado = despesas.reduce((sum, d) => sum + d.valor, 0);
+            const saldo = saldoGlobal - totalGeral;
 
             document.getElementById('entradas').innerText = `R$ ${saldoGlobal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('despesas').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('despesas').innerText = `R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             
             const saldoEl = document.getElementById('saldo');
             saldoEl.innerText = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             saldoEl.className = `card-value ${saldo >= 0 ? 'positive' : 'negative'}`;
 
-            document.getElementById('expenseCount').innerText = despesas.length > 0 ? `(${despesas.length})` : '';
+            // Contador mostra filtrado / total
+            const countText = filtro 
+                ? `(${despesas.length} de ${todasDespesas.length}) • R$ ${totalFiltrado.toFixed(2)}`
+                : despesas.length > 0 ? `(${despesas.length})` : '';
+            document.getElementById('expenseCount').innerText = countText;
 
             const lista = document.getElementById('despesasLista');
             if (despesas.length === 0) {
-                lista.innerHTML = '<div class="empty-state">Nenhuma despesa registrada</div>';
+                lista.innerHTML = `<div class="empty-state">${filtro ? 'Nenhuma despesa nesta categoria' : 'Nenhuma despesa registrada'}</div>`;
             } else {
-                // MOSTRA TODAS AS DESPESAS (sem limite)
                 lista.innerHTML = despesas.slice().reverse().map(d => `
                     <div class="expense-item">
                         <div class="expense-info">
@@ -736,6 +762,15 @@
                     </div>
                 `).join('');
             }
+        }
+
+        function atualizarFiltroCategoria() {
+            const cats = carregarCategorias();
+            const filtroSelect = document.getElementById('filtroCategoria');
+            const valorAtual = filtroSelect.value;
+            filtroSelect.innerHTML = '<option value="">Todas</option>' + 
+                cats.map(c => `<option value="${c.nome}">${c.icon} ${c.nome}</option>`).join('');
+            filtroSelect.value = valorAtual;
         }
 
         function fecharModal(id) {
