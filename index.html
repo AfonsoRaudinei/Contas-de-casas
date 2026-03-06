@@ -186,6 +186,28 @@
             color: #FF3B30;
         }
 
+        .btn-icon.edit:hover {
+            background: #E3F2FD;
+            color: #007AFF;
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #34C759 0%, #248A3D 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        .btn-export:hover {
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+        }
+
         /* LISTA DE DESPESAS */
         .expense-list-container {
             max-height: 400px;
@@ -200,7 +222,7 @@
 
         .expense-item {
             display: grid;
-            grid-template-columns: 1fr auto auto;
+            grid-template-columns: 1fr auto auto auto;
             align-items: center;
             gap: 12px;
             padding: 10px 12px;
@@ -515,6 +537,7 @@
                 <select id="filtroCategoria" onchange="atualizarDashboard()" class="filter-select">
                     <option value="">Todas</option>
                 </select>
+                <button class="btn-export" onclick="exportarPDF()">📄 Exportar PDF</button>
             </div>
             <div class="expense-list-container">
                 <div id="despesasLista" class="expense-list">
@@ -550,7 +573,7 @@
         </div>
     </div>
 
-    <!-- MODAL -->
+    <!-- MODAL EDITAR SALDO -->
     <div id="modalEditarSaldo" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -568,6 +591,35 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR DESPESA -->
+    <div id="modalEditarDespesa" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>✏️ Editar Despesa</span>
+                <button class="sidebar-close" onclick="fecharModal('modalEditarDespesa')">&times;</button>
+            </div>
+            <input type="hidden" id="editDespesaId">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Descrição</label>
+                <input id="editDescricao" type="text" placeholder="Ex: Almoço, Farmácia...">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Categoria</label>
+                <select id="editCategoria"></select>
+            </div>
+            <div class="form-group">
+                <label>Valor (R$)</label>
+                <input id="editValor" type="number" step="0.01" placeholder="0,00">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="fecharModal('modalEditarDespesa')">Cancelar</button>
+                <button class="btn-primary" onclick="salvarEdicaoDespesa()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" integrity="sha384-fCAW/rDWORTbQXSiB7mOg0QtQ5c+r0f544y6XoKjuVva0nMBlCpNUjiFeG5iMdS3" crossorigin="anonymous"></script>
     <script>
         const emojis = ['🏠','🛒','🏥','🔌','📡','📚','🎬','🍽️','🚗','✈️','👕','💻','🎮','📱','💄','⚽','🎸','📖','🧘','💊','☕','🍕','🍰','🎂','🎁','💐','🌸','🎄','🎃','🦃','🎆','🎇','🎉','🎊','🎈','🎀','🎯','🎲','🧩','🎪','🎭','🎨','🖼️','🎤','🎧','🎵','🎶','🏆','🥇','🥈','🥉','⭐','✨','💫','⚡','🔥','💥','✅','❌','⚠️','🔔','💡','🔐'];
         
@@ -758,6 +810,7 @@
                             <div class="expense-meta">${d.categoria} • ${d.data}</div>
                         </div>
                         <div class="expense-value">- R$ ${d.valor.toFixed(2)}</div>
+                        <button class="btn-icon edit" onclick="editarDespesa(${d.id})" title="Editar">✏️</button>
                         <button class="btn-icon delete" onclick="deletarDespesa(${d.id})">✕</button>
                     </div>
                 `).join('');
@@ -773,12 +826,123 @@
             filtroSelect.value = valorAtual;
         }
 
+        function editarDespesa(id) {
+            const despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            const despesa = despesas.find(d => d.id === id);
+            if (!despesa) return;
+
+            const cats = carregarCategorias();
+            document.getElementById('editCategoria').innerHTML =
+                '<option value="">Selecione...</option>' +
+                cats.map(c => `<option value="${c.nome}" ${c.nome === despesa.categoria ? 'selected' : ''}>${c.icon} ${c.nome}</option>`).join('');
+
+            document.getElementById('editDespesaId').value = id;
+            document.getElementById('editDescricao').value = despesa.descricao;
+            document.getElementById('editValor').value = despesa.valor;
+            document.getElementById('modalEditarDespesa').classList.add('active');
+        }
+
+        function salvarEdicaoDespesa() {
+            const id = parseInt(document.getElementById('editDespesaId').value);
+            const desc = document.getElementById('editDescricao').value.trim();
+            const cat = document.getElementById('editCategoria').value;
+            const val = parseFloat(document.getElementById('editValor').value);
+
+            if (!desc) {
+                alert('Informe uma descrição!');
+                return;
+            }
+            if (!cat) {
+                alert('Selecione uma categoria!');
+                return;
+            }
+            if (isNaN(val) || val <= 0) {
+                alert('Informe um valor válido e maior que zero!');
+                return;
+            }
+
+            let despesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            const idx = despesas.findIndex(d => d.id === id);
+            if (idx === -1) return;
+
+            despesas[idx] = { ...despesas[idx], descricao: desc, categoria: cat, valor: val };
+            localStorage.setItem('despesas', JSON.stringify(despesas));
+            fecharModal('modalEditarDespesa');
+            atualizarDashboard();
+        }
+
+        function exportarPDF() {
+            const todasDespesas = JSON.parse(localStorage.getItem('despesas') || '[]');
+            if (todasDespesas.length === 0) {
+                alert('Nenhuma despesa para exportar!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Título
+            doc.setFontSize(18);
+            doc.setTextColor(29, 29, 31);
+            doc.text('Dashboard Financeiro - Relatório de Despesas', 14, 20);
+
+            // Data de geração
+            doc.setFontSize(10);
+            doc.setTextColor(134, 134, 139);
+            doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
+
+            // Resumo
+            const totalDespesas = todasDespesas.reduce((sum, d) => sum + d.valor, 0);
+            const saldo = saldoGlobal - totalDespesas;
+
+            doc.setFontSize(11);
+            doc.setTextColor(29, 29, 31);
+            doc.text(`Entradas: R$ ${saldoGlobal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, 38);
+            doc.text(`Total de Despesas: R$ ${totalDespesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, 45);
+            doc.text(`Saldo: R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, 52);
+
+            // Tabela de despesas
+            const rows = todasDespesas.slice().reverse().map(d => [
+                d.descricao,
+                d.categoria,
+                d.data,
+                `R$ ${d.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+            ]);
+
+            doc.autoTable({
+                startY: 60,
+                head: [['Descrição', 'Categoria', 'Data', 'Valor']],
+                body: rows,
+                headStyles: { fillColor: [0, 122, 255], textColor: 255, fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [245, 245, 247] },
+                styles: { fontSize: 10, cellPadding: 4 },
+                columnStyles: {
+                    0: { cellWidth: 70 },
+                    1: { cellWidth: 45 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 35, halign: 'right' }
+                }
+            });
+
+            // Rodapé
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(9);
+                doc.setTextColor(134, 134, 139);
+                doc.text(`Página ${i} de ${pageCount}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+            }
+
+            doc.save(`relatorio_financeiro_${new Date().toISOString().slice(0, 10)}.pdf`);
+        }
+
         function fecharModal(id) {
             document.getElementById(id).classList.remove('active');
         }
 
         window.onclick = (e) => {
             if (e.target.id === 'modalEditarSaldo') fecharModal('modalEditarSaldo');
+            if (e.target.id === 'modalEditarDespesa') fecharModal('modalEditarDespesa');
         };
 
         inicializar();
